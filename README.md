@@ -1,12 +1,22 @@
-# derealizer
+# Derealizer
 
 A java serialization library designed for the Virtual Cardboard LWJGL game engine.
 
 Create an enum and easily generate POJO class code.
 
-The generated POJO classes can serialize and deserialize with the **fewest number of bytes** possible.
+The generated POJO classes can serialize and deserialize with the **fewest number of bytes** possible. The
+auto-generated serialization code serializes and deserializes using the fewest number of bytes possible
 
----
+## Features
+
+| Feature       | Description                                                                    |
+|---------------|--------------------------------------------------------------------------------|
+| Ease of use   | It's simple to create serialization formats and generate new POJO classes.     |
+| Serialization | _Derealizer_ is great at serializing java objects into byte arrays.            |
+| Efficiency    | _Derealizer_'s byte arrays _might_ be more compact than Google's protobuffers. |
+
+In our game engine, _Derealizer_ is used to convert network events into byte arrays so that they can be sent through the
+network.
 
 ## Usage
 
@@ -87,15 +97,7 @@ Generated code:
 package networking.protocols;
 
 import static derealizer.SerializationClassGenerator.generate;
-import static derealizer.datatype.SerializationDataType.BOOLEAN;
-import static derealizer.datatype.SerializationDataType.BYTE;
-import static derealizer.datatype.SerializationDataType.LONG;
-import static derealizer.datatype.SerializationDataType.INT;
-import static derealizer.datatype.SerializationDataType.SHORT;
-import static derealizer.datatype.SerializationDataType.STRING_UTF8;
-import static derealizer.datatype.SerializationDataType.optional;
-import static derealizer.datatype.SerializationDataType.pojo;
-import static derealizer.datatype.SerializationDataType.repeated;
+import static derealizer.datatype.SerializationDataType.*;
 import static derealizer.format.SerializationFormat.types;
 
 import derealizer.format.SerializationFormatEnum;
@@ -182,7 +184,6 @@ public class Potato implements SerializationPojo {
 	}
 
 }
-
 ```
 
 ```java
@@ -312,6 +313,4 @@ public class Cat implements SerializationPojo {
 	}
 
 }
-
-==========================================================================================
 ```
