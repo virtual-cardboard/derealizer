@@ -2,19 +2,20 @@ package derealizer.datatype;
 
 import static derealizer.datatype.DataTypeType.POJO;
 
+import derealizer.format.SerializationFormatEnum;
 import derealizer.format.SerializationPojo;
 
 public class PojoDataType extends SerializationDataType {
 
-	private final Class<? extends SerializationPojo> pojoClass;
+	private final SerializationFormatEnum<? extends SerializationPojo> pojoFormatEnum;
 
-	protected PojoDataType(Class<? extends SerializationPojo> pojoClass) {
+	protected PojoDataType(SerializationFormatEnum<? extends SerializationPojo> pojoFormatEnum) {
 		super(POJO);
-		this.pojoClass = pojoClass;
+		this.pojoFormatEnum = pojoFormatEnum;
 	}
 
-	public Class<? extends SerializationPojo> pojoClass() {
-		return pojoClass;
+	public SerializationFormatEnum<? extends SerializationPojo> pojoFormatEnum() {
+		return pojoFormatEnum;
 	}
 
 }

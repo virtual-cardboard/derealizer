@@ -201,11 +201,11 @@ public class SerializationClassGenerator {
 				case OPTIONAL:
 					SerializationDataType optionalDataType = ((OptionalDataType) dataType).optionalDataType;
 					return indents + "if (reader.readBoolean()) {\n" +
-							toReadMethod(variableName, optionalDataType, numIndents, variablesCount, null) +
-							indents + "};\n";
+							"	" + toReadMethod(variableName, optionalDataType, numIndents, variablesCount, null) +
+							indents + "}\n";
 				case POJO: {
-					Class<? extends SerializationPojo> pojoClass = ((PojoDataType) dataType).pojoClass();
-					String pojoVariableType = pojoClass.getSimpleName();
+					SerializationFormatEnum<? extends SerializationPojo> pojoFormatEnum = ((PojoDataType) dataType).pojoFormatEnum();
+					String pojoVariableType = toCamelCase(pojoFormatEnum.toString());
 					return indents + "this." + variableName + " = new " + pojoVariableType + "();\n" +
 							indents + "this." + variableName + ".read(reader);\n";
 				}
@@ -236,13 +236,13 @@ public class SerializationClassGenerator {
 				case OPTIONAL:
 					SerializationDataType optionalDataType = ((OptionalDataType) dataType).optionalDataType;
 					return indents + "if (reader.readBoolean()) {\n" +
-							toReadMethod(variableName, optionalDataType, numIndents, variablesCount, listName) +
+							"	" + toReadMethod(variableName, optionalDataType, numIndents, variablesCount, listName) +
 							indents + "} else {\n" +
 							indents + "\t" + listName + ".add(null);\n" +
 							indents + "}\n";
 				case POJO: {
-					Class<? extends SerializationPojo> pojoClass = ((PojoDataType) dataType).pojoClass();
-					String pojoVariableType = pojoClass.getSimpleName();
+					SerializationFormatEnum<? extends SerializationPojo> pojoFormatEnum = ((PojoDataType) dataType).pojoFormatEnum();
+					String pojoVariableType = toCamelCase(pojoFormatEnum.toString());
 					String pojoVariableName = "pojo" + variablesCount;
 					return indents + pojoVariableType + " " + pojoVariableName + " = new " + pojoVariableType + "();\n" +
 							indents + pojoVariableName + ".read(reader);\n" +
@@ -283,12 +283,12 @@ public class SerializationClassGenerator {
 				return s;
 			case OPTIONAL:
 				SerializationDataType optionalDataType = ((OptionalDataType) dataType).optionalDataType;
-				return indents + "if (variable == null) {\n" +
-						indents + " writer.consume(false);\n" +
+				return indents + "if (" + variableName + " == null) {\n" +
+						indents + "	writer.consume(false);\n" +
 						indents + "} else {\n" +
-						indents + " writer.consume(true);\n" +
-						toWriteMethod(variableName, optionalDataType, numIndents, variablesCount) +
-						indents + "};\n";
+						indents + "	writer.consume(true);\n" +
+						toWriteMethod(variableName, optionalDataType, numIndents + 1, variablesCount) +
+						indents + "}\n";
 			case POJO:
 				return indents + variableName + ".write(writer);\n";
 			default:
@@ -321,8 +321,9 @@ public class SerializationClassGenerator {
 			case REPEATED:
 				return "List<" + convertPrimitiveToWrapper(((RepeatedDataType) dataType).repeatedDataType) + ">";
 			case POJO:
-				return ((PojoDataType) dataType).pojoClass().getSimpleName();
+				return toCamelCase(((PojoDataType) dataType).pojoFormatEnum().toString());
 			case OPTIONAL:
+				return convertPrimitiveToWrapper(((OptionalDataType) dataType).optionalDataType);
 			default:
 				throw new RuntimeException("Unhandled SerializationDataType: " + dataType.type + "\nCould not interpret data type as a field type.");
 		}
@@ -366,7 +367,8 @@ public class SerializationClassGenerator {
 				return "optional(" + dataTypeToString(optionalDataType.optionalDataType) + ")";
 			case POJO:
 				PojoDataType pojoDataType = (PojoDataType) dataType;
-				return "pojo(" + pojoDataType.pojoClass().getSimpleName() + ".class)";
+				SerializationFormatEnum<? extends SerializationPojo> pojoFormatEnum = pojoDataType.pojoFormatEnum();
+				return "pojo(" + pojoFormatEnum.toString() + ".class)";
 			case REPEATED:
 				RepeatedDataType repeatedDataType = (RepeatedDataType) dataType;
 				return "repeated(" + dataTypeToString(repeatedDataType.repeatedDataType) + ")";
