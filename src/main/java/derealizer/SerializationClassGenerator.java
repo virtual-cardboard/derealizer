@@ -133,7 +133,7 @@ public class SerializationClassGenerator {
 		}
 		// byte[] Constructor
 		s += "	public " + toCamelCase(e.name()) + "(byte[] bytes) {\n";
-		s += "		read(new " + SerializationReader.class.getSimpleName() + "(bytes);\n";
+		s += "		read(new " + SerializationReader.class.getSimpleName() + "(bytes));\n";
 		s += "	}\n";
 		s += "\n";
 		s += "\n";
