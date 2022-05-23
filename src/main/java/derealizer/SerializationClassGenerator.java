@@ -19,12 +19,12 @@ import derealizer.format.SerializationPojo;
 
 public class SerializationClassGenerator {
 
-	public static <T extends SerializationPojo> void generate(Class<? extends SerializationFormatEnum<T>> formatsClass, Class<T> pojoBaseClass) {
+	public static <T extends SerializationPojo<?>> void generate(Class<? extends SerializationFormatEnum> formatEnum, Class<T> pojoBaseClass) {
 		System.out.println(separator("Enum class"));
-		System.out.println(generateEnumClass(formatsClass, pojoBaseClass));
+		System.out.println(generateEnumClass(formatEnum, pojoBaseClass));
 		System.out.println(separator());
 		System.out.println();
-		for (SerializationFormatEnum<T> format : formatsClass.getEnumConstants()) {
+		for (SerializationFormatEnum format : formatEnum.getEnumConstants()) {
 			Enum<?> e = (Enum<?>) format;
 			verifyEnumLabels(format);
 			System.out.println(separator(toCamelCase(e.name())));
@@ -33,9 +33,9 @@ public class SerializationClassGenerator {
 		}
 	}
 
-	private static <T extends SerializationPojo> String generateEnumClass(Class<? extends SerializationFormatEnum<T>> formatsClass, Class<T> pojoBaseClass) {
+	private static <T extends SerializationPojo<?>> String generateEnumClass(Class<? extends SerializationFormatEnum> formatEnum, Class<T> pojoBaseClass) {
 		String s = "";
-		s += formatsClass.getPackage() + ";\n";
+		s += formatEnum.getPackage() + ";\n";
 		s += "\n";
 		s += "import static " + SerializationClassGenerator.class.getCanonicalName() + ".generate;\n";
 		s += "import static " + SerializationDataType.class.getCanonicalName() + ".BOOLEAN;\n";
@@ -54,17 +54,13 @@ public class SerializationClassGenerator {
 		s += "import " + FieldNames.class.getCanonicalName() + ";\n";
 		s += "import " + SerializationPojo.class.getCanonicalName() + ";\n";
 		s += "\n";
-		s += "public enum " + formatsClass.getSimpleName() + " implements " + SerializationFormatEnum.class.getSimpleName() + "<" + pojoBaseClass.getSimpleName() + "> {\n";
+		s += "public enum " + formatEnum.getSimpleName() + " implements " + SerializationFormatEnum.class.getSimpleName() + " {\n";
 		s += "\n";
-		for (SerializationFormatEnum<T> format : formatsClass.getEnumConstants()) {
+		for (SerializationFormatEnum format : formatEnum.getEnumConstants()) {
 			Enum<?> e = (Enum<?>) format;
 			Queue<SerializationDataType> dataTypes = format.format().dataTypes();
 			s += "	@" + FieldNames.class.getSimpleName() + "({ " + commaify(quotify(getFieldNames(format))) + " })\n";
-			if (format.superClass().equals(pojoBaseClass)) {
-				s += "	" + e.name() + "(types(" + commaify(dataTypes) + "), " + toCamelCase(e.name()) + ".class),\n";
-			} else {
-				s += "	" + e.name() + "(types(" + commaify(dataTypes) + "), " + toCamelCase(e.name()) + ".class, " + format.superClass().getSimpleName() + ".class),\n";
-			}
+			s += "	" + e.name() + "(types(" + commaify(dataTypes) + "), " + toCamelCase(e.name()) + ".class),\n";
 		}
 		s += "	;\n";
 		s += "\n";
@@ -72,16 +68,10 @@ public class SerializationClassGenerator {
 		s += "\n";
 		s += "	private final " + SerializationFormat.class.getSimpleName() + " format;\n";
 		s += "	private final Class<? extends " + pojoBaseClass.getSimpleName() + "> pojoClass;\n";
-		s += "	private final Class<? extends " + pojoBaseClass.getSimpleName() + "> superClass;\n";
 		s += "\n";
-		s += "	private " + formatsClass.getSimpleName() + "(" + SerializationFormat.class.getSimpleName() + " format, Class<? extends " + pojoBaseClass.getSimpleName() + "> pojoClass) {\n";
-		s += "		this(format, pojoClass, " + pojoBaseClass.getSimpleName() + ".class);\n";
-		s += "	}\n";
-		s += "\n";
-		s += "	private " + formatsClass.getSimpleName() + "(" + SerializationFormat.class.getSimpleName() + " format, Class<? extends " + pojoBaseClass.getSimpleName() + "> pojoClass, Class<? extends " + pojoBaseClass.getSimpleName() + "> superClass) {\n";
+		s += "	private " + formatEnum.getSimpleName() + "(" + SerializationFormat.class.getSimpleName() + " format, Class<? extends " + pojoBaseClass.getSimpleName() + "> pojoClass) {\n";
 		s += "		this.format = format;\n";
 		s += "		this.pojoClass = pojoClass;\n";
-		s += "		this.superClass = superClass;\n";
 		s += "	}\n";
 		s += "\n";
 		s += "	@Override\n";
@@ -94,31 +84,32 @@ public class SerializationClassGenerator {
 		s += "		return pojoClass;\n";
 		s += "	}\n";
 		s += "\n";
-		s += "	@Override\n";
-		s += "	public Class<? extends " + pojoBaseClass.getSimpleName() + "> superClass() {\n";
-		s += "		return superClass;\n";
-		s += "	}\n";
-		s += "\n";
 		s += "	public static void main(String[] args) {\n";
-		s += "		generate(" + formatsClass.getSimpleName() + ".class, " + pojoBaseClass.getSimpleName() + ".class);\n";
+		s += "		generate(" + formatEnum.getSimpleName() + ".class, " + pojoBaseClass.getSimpleName() + ".class);\n";
 		s += "	}\n";
 		s += "\n";
 		s += "}\n";
 		return s;
 	}
 
-	private static <T extends SerializationPojo> String generatePOJOClass(SerializationFormatEnum<T> format, Class<T> pojoBaseClass) {
-		String implementsOrExtends = pojoBaseClass.isInterface() ? "implements" : "extends";
-		Enum<?> e = (Enum<?>) format;
+	private static <T extends SerializationPojo<?>> String generatePOJOClass(SerializationFormatEnum formatEnum, Class<T> pojoBaseClass) {
+		Enum<?> e = (Enum<?>) formatEnum;
 		String s = "";
-		s += format.getClass().getPackage() + ".pojo;\n";
+		s += formatEnum.getClass().getPackage() + ".pojo;\n";
+		s += "\n";
+		s += "import static " + formatEnum.getClass().getName() + "." + e.name() + ";\n";
 		s += "\n";
 		s += "import java.util.List;\n";
 		s += "\n";
-		s += "public class " + toCamelCase(e.name()) + " " + implementsOrExtends + " " + pojoBaseClass.getSimpleName() + " {\n";
+		if (pojoBaseClass.equals(SerializationPojo.class)) {
+			s += "public class " + toCamelCase(e.name()) + " implements " + SerializationPojo.class.getSimpleName() + "<" + formatEnum.getClass().getSimpleName() + "> {\n";
+		} else {
+			String implementsOrExtends = pojoBaseClass.isInterface() ? "implements" : "extends";
+			s += "public class " + toCamelCase(e.name()) + " " + implementsOrExtends + " " + pojoBaseClass.getSimpleName() + " {\n";
+		}
 		s += "\n";
-		String[] fieldNames = getFieldNames(format);
-		String[] fieldTypes = format.format().dataTypes().stream().map(SerializationClassGenerator::toFieldType).toArray(String[]::new);
+		String[] fieldNames = getFieldNames(formatEnum);
+		String[] fieldTypes = formatEnum.format().dataTypes().stream().map(SerializationClassGenerator::toFieldType).toArray(String[]::new);
 		for (int i = 0; i < fieldNames.length; i++) {
 			s += "	private " + fieldTypes[i] + " " + fieldNames[i] + ";\n";
 		}
@@ -140,10 +131,21 @@ public class SerializationClassGenerator {
 			}
 			s += "	}\n";
 		}
+		// byte[] Constructor
+		s += "	public " + toCamelCase(e.name()) + "(byte[] bytes) {\n";
+		s += "		read(new " + SerializationReader.class.getSimpleName() + "(bytes);\n";
+		s += "	}\n";
+		s += "\n";
+		s += "\n";
+		s += "	@Override\n";
+		s += "	public " + formatEnum.getClass().getSimpleName() + " formatEnum() {\n";
+		s += "		return " + e.name() + ";\n";
+		s += "	}\n";
+		s += "\n";
 		s += "\n";
 		s += "	@Override\n";
 		s += "	public void read(" + SerializationReader.class.getSimpleName() + " reader) {\n";
-		SerializationDataType[] dataTypes = format.format().dataTypes().stream().toArray(SerializationDataType[]::new);
+		SerializationDataType[] dataTypes = formatEnum.format().dataTypes().stream().toArray(SerializationDataType[]::new);
 		for (int i = 0; i < fieldNames.length; i++) {
 			SerializationDataType dataType = dataTypes[i];
 			s += toReadMethod(fieldNames[i], dataType);
@@ -204,7 +206,7 @@ public class SerializationClassGenerator {
 							"	" + toReadMethod(variableName, optionalDataType, numIndents, variablesCount, null) +
 							indents + "}\n";
 				case POJO: {
-					SerializationFormatEnum<? extends SerializationPojo> pojoFormatEnum = ((PojoDataType) dataType).pojoFormatEnum();
+					SerializationFormatEnum pojoFormatEnum = ((PojoDataType) dataType).pojoFormatEnum();
 					String pojoVariableType = toCamelCase(pojoFormatEnum.toString());
 					return indents + "this." + variableName + " = new " + pojoVariableType + "();\n" +
 							indents + "this." + variableName + ".read(reader);\n";
@@ -241,7 +243,7 @@ public class SerializationClassGenerator {
 							indents + "\t" + listName + ".add(null);\n" +
 							indents + "}\n";
 				case POJO: {
-					SerializationFormatEnum<? extends SerializationPojo> pojoFormatEnum = ((PojoDataType) dataType).pojoFormatEnum();
+					SerializationFormatEnum pojoFormatEnum = ((PojoDataType) dataType).pojoFormatEnum();
 					String pojoVariableType = toCamelCase(pojoFormatEnum.toString());
 					String pojoVariableName = "pojo" + variablesCount;
 					return indents + pojoVariableType + " " + pojoVariableName + " = new " + pojoVariableType + "();\n" +
@@ -296,7 +298,7 @@ public class SerializationClassGenerator {
 		}
 	}
 
-	private static <T extends SerializationPojo> void verifyEnumLabels(SerializationFormatEnum<T> format) {
+	private static void verifyEnumLabels(SerializationFormatEnum format) {
 		if (getFieldNames(format).length != format.format().dataTypes().size()) {
 			Enum<?> e = (Enum<?>) format;
 			throw new InputMismatchException("Serialization format definition " + e.name() + " needs the same number of labels in the @" + FieldNames.class.getSimpleName() +
@@ -344,16 +346,16 @@ public class SerializationClassGenerator {
 		}
 	}
 
-	private static <T extends SerializationPojo> String[] getFieldNames(SerializationFormatEnum<T> format) {
-		Enum<?> formatEnum = (Enum<?>) format;
+	private static <T extends SerializationPojo<?>> String[] getFieldNames(SerializationFormatEnum formatEnum) {
+		String name = ((Enum<?>) formatEnum).name();
 		try {
-			Field field = format.getClass().getField(formatEnum.name());
+			Field field = formatEnum.getClass().getField(name);
 			if (!field.isAnnotationPresent(FieldNames.class)) {
-				throw new RuntimeException("Serialization format definition " + formatEnum.name() + " is missing an @" + FieldNames.class.getSimpleName() + " annotation.");
+				throw new RuntimeException("Serialization format definition " + name + " is missing an @" + FieldNames.class.getSimpleName() + " annotation.");
 			}
 			return field.getAnnotation(FieldNames.class).value();
 		} catch (NoSuchFieldException e) {
-			throw new RuntimeException("Serialization format definition " + formatEnum.name() + " needs field names for the class generator to create a POJO class.\n" +
+			throw new RuntimeException("Serialization format definition " + name + " needs field names for the class generator to create a POJO class.\n" +
 					"Add a @" + FieldNames.class.getSimpleName() + " annotation to define field names. For example:\n	@" + FieldNames.class.getSimpleName() + "({\"field1\", \"field2\"})");
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
@@ -367,8 +369,8 @@ public class SerializationClassGenerator {
 				return "optional(" + dataTypeToString(optionalDataType.optionalDataType) + ")";
 			case POJO:
 				PojoDataType pojoDataType = (PojoDataType) dataType;
-				SerializationFormatEnum<? extends SerializationPojo> pojoFormatEnum = pojoDataType.pojoFormatEnum();
-				return "pojo(" + pojoFormatEnum.toString() + ".class)";
+				SerializationFormatEnum pojoFormatEnum = pojoDataType.pojoFormatEnum();
+				return "pojo(" + pojoFormatEnum.toString() + ")";
 			case REPEATED:
 				RepeatedDataType repeatedDataType = (RepeatedDataType) dataType;
 				return "repeated(" + dataTypeToString(repeatedDataType.repeatedDataType) + ")";

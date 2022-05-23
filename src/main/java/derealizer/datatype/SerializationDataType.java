@@ -1,7 +1,6 @@
 package derealizer.datatype;
 
 import derealizer.format.SerializationFormatEnum;
-import derealizer.format.SerializationPojo;
 
 public class SerializationDataType {
 
@@ -26,7 +25,7 @@ public class SerializationDataType {
 		return new OptionalDataType(type);
 	}
 
-	public static PojoDataType pojo(SerializationFormatEnum<? extends SerializationPojo> pojoFormatEnum) {
+	public static PojoDataType pojo(SerializationFormatEnum pojoFormatEnum) {
 		return new PojoDataType(pojoFormatEnum);
 	}
 
