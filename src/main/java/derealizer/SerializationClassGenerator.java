@@ -64,8 +64,6 @@ public class SerializationClassGenerator {
 		}
 		s += "	;\n";
 		s += "\n";
-		s += "	// Do not edit auto-generated code below this line.\n";
-		s += "\n";
 		s += "	private final " + SerializationFormat.class.getSimpleName() + " format;\n";
 		s += "	private final Class<? extends " + pojoBaseClass.getSimpleName() + "> pojoClass;\n";
 		s += "\n";
@@ -132,10 +130,10 @@ public class SerializationClassGenerator {
 			s += "	}\n";
 		}
 		// byte[] Constructor
+		s += "\n";
 		s += "	public " + toCamelCase(e.name()) + "(byte[] bytes) {\n";
 		s += "		read(new " + SerializationReader.class.getSimpleName() + "(bytes));\n";
 		s += "	}\n";
-		s += "\n";
 		s += "\n";
 		s += "	@Override\n";
 		s += "	public " + formatEnum.getClass().getSimpleName() + " formatEnum() {\n";
