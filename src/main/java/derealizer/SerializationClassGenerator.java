@@ -1,5 +1,6 @@
 package derealizer;
 
+import static java.lang.reflect.Modifier.isAbstract;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
@@ -93,12 +94,9 @@ public class SerializationClassGenerator {
 	private static <T extends SerializationPojo<?>> String generatePOJOClass(SerializationFormatEnum formatEnum, Class<T> pojoBaseClass) {
 		Enum<?> e = (Enum<?>) formatEnum;
 		String s = "";
-		s += formatEnum.getClass().getPackage() + ".pojo;\n";
-		s += "\n";
-		s += "import static " + formatEnum.getClass().getName() + "." + e.name() + ";\n";
-		s += "\n";
-		s += "import java.util.List;\n";
-		s += "\n";
+		s += formatEnum.getClass().getPackage() + ".pojo;\n\n";
+		s += "import static " + formatEnum.getClass().getName() + "." + e.name() + ";\n\n";
+		s += "import java.util.List;\n\n";
 		if (pojoBaseClass.equals(SerializationPojo.class)) {
 			s += "public class " + toCamelCase(e.name()) + " implements " + SerializationPojo.class.getSimpleName() + "<" + formatEnum.getClass().getSimpleName() + "> {\n";
 		} else {
@@ -114,8 +112,7 @@ public class SerializationClassGenerator {
 		s += "\n";
 		// No-arg constructor
 		s += "	public " + toCamelCase(e.name()) + "() {\n";
-		s += "	}\n";
-		s += "\n";
+		s += "	}\n\n";
 		// Constructor
 		if (fieldNames.length > 0) {
 			s += "	public " + toCamelCase(e.name()) + "(";
@@ -133,30 +130,37 @@ public class SerializationClassGenerator {
 		s += "\n";
 		s += "	public " + toCamelCase(e.name()) + "(byte[] bytes) {\n";
 		s += "		read(new " + SerializationReader.class.getSimpleName() + "(bytes));\n";
-		s += "	}\n";
-		s += "\n";
+		s += "	}\n\n";
+		// Format enum getter
 		s += "	@Override\n";
 		s += "	public " + formatEnum.getClass().getSimpleName() + " formatEnum() {\n";
 		s += "		return " + e.name() + ";\n";
-		s += "	}\n";
-		s += "\n";
-		s += "\n";
+		s += "	}\n\n";
+		// Read
 		s += "	@Override\n";
 		s += "	public void read(" + SerializationReader.class.getSimpleName() + " reader) {\n";
+		// Call super.read if needed
+		if (isImplemented(pojoBaseClass, "read", SerializationReader.class)) {
+			s += "		super.read(reader);\n";
+		}
 		SerializationDataType[] dataTypes = formatEnum.format().dataTypes().stream().toArray(SerializationDataType[]::new);
 		for (int i = 0; i < fieldNames.length; i++) {
 			SerializationDataType dataType = dataTypes[i];
 			s += toReadMethod(fieldNames[i], dataType);
 		}
-		s += "	}\n";
-		s += "\n";
+		s += "	}\n\n";
+		// Write
 		s += "	@Override\n";
 		s += "	public void write(SerializationWriter writer) {\n";
+		// Call super.write if needed
+		if (isImplemented(pojoBaseClass, "write", SerializationWriter.class)) {
+			s += "		super.write(writer);\n";
+		}
 		for (int i = 0; i < fieldNames.length; i++) {
 			s += toWriteMethod(fieldNames[i], dataTypes[i]);
 		}
-		s += "	}\n";
-		s += "\n";
+		s += "	}\n\n";
+		// Getters
 		for (int i = 0; i < fieldNames.length; i++) {
 			s += "	public " + fieldTypes[i] + " " + fieldNames[i] + "() {\n";
 			s += "		return " + fieldNames[i] + ";\n";
@@ -436,6 +440,14 @@ public class SerializationClassGenerator {
 			s += "=";
 		}
 		return s;
+	}
+
+	private static <T extends SerializationPojo<?>> boolean isImplemented(Class<T> pojoBaseClass, String methodName, Class<?> param) {
+		try {
+			return !isAbstract(pojoBaseClass.getMethod(methodName, param).getModifiers());
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }
