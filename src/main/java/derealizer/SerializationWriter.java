@@ -45,6 +45,14 @@ public class SerializationWriter {
 		return this;
 	}
 
+	public SerializationWriter consume(double val) {
+		return consume(Double.doubleToLongBits(val));
+	}
+
+	public SerializationWriter consume(float val) {
+		return consume(Float.floatToIntBits(val));
+	}
+
 	public SerializationWriter consume(String val) {
 		byte[] b = val.getBytes(UTF_8);
 		short numBytes = (short) b.length;

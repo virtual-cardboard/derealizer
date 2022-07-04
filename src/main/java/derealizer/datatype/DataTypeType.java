@@ -7,6 +7,8 @@ public enum DataTypeType {
 	SHORT,
 	BYTE,
 	BOOLEAN,
+	DOUBLE,
+	FLOAT,
 	STRING_UTF8,
 	ONE_OF,
 	REPEATED,

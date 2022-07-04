@@ -9,6 +9,8 @@ public class SerializationDataType {
 	public static final SerializationDataType SHORT = new SerializationDataType(DataTypeType.SHORT);
 	public static final SerializationDataType BYTE = new SerializationDataType(DataTypeType.BYTE);
 	public static final SerializationDataType BOOLEAN = new SerializationDataType(DataTypeType.BOOLEAN);
+	public static final SerializationDataType DOUBLE = new SerializationDataType(DataTypeType.DOUBLE);
+	public static final SerializationDataType FLOAT = new SerializationDataType(DataTypeType.FLOAT);
 	public static final SerializationDataType STRING_UTF8 = new SerializationDataType(DataTypeType.STRING_UTF8);
 
 	public final DataTypeType type;

@@ -53,6 +53,14 @@ public class SerializationReader {
 		return val;
 	}
 
+	public double readDouble() {
+		return Double.longBitsToDouble(readLong());
+	}
+
+	public float readFloat() {
+		return Float.intBitsToFloat(readInt());
+	}
+
 	public boolean readBoolean() {
 		byte val = bytes[index];
 		index += 1;

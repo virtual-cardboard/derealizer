@@ -188,6 +188,8 @@ public class SerializationClassGenerator {
 				case SHORT:
 				case BYTE:
 				case BOOLEAN:
+				case DOUBLE:
+				case FLOAT:
 				case STRING_UTF8:
 					return indents + "this." + variableName + " = reader.read" + toCamelCase(dataType.type.name().toLowerCase()) + "();\n";
 				case REPEATED: {
@@ -275,6 +277,8 @@ public class SerializationClassGenerator {
 			case SHORT:
 			case BYTE:
 			case BOOLEAN:
+			case DOUBLE:
+			case FLOAT:
 			case STRING_UTF8:
 				return indents + "writer.consume(" + variableName + ");\n";
 			case REPEATED:
@@ -316,6 +320,8 @@ public class SerializationClassGenerator {
 			case SHORT:
 			case BYTE:
 			case BOOLEAN:
+			case DOUBLE:
+			case FLOAT:
 				return dataType.type.name().toLowerCase();
 			case STRING_UTF8:
 				return "String";
@@ -341,6 +347,8 @@ public class SerializationClassGenerator {
 			case SHORT:
 			case BYTE:
 			case BOOLEAN:
+			case DOUBLE:
+			case FLOAT:
 				String n = dataType.type.name();
 				return n.charAt(0) + n.substring(1).toLowerCase();
 			default:
