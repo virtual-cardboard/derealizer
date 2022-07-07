@@ -3,7 +3,7 @@ package derealizer.format;
 import derealizer.SerializationReader;
 import derealizer.SerializationWriter;
 
-public interface SerializationPojo<T extends SerializationFormatEnum> {
+public interface Serializable {
 
 	public default byte[] serialize() {
 		SerializationWriter writer = new SerializationWriter();
@@ -15,6 +15,6 @@ public interface SerializationPojo<T extends SerializationFormatEnum> {
 
 	public abstract void write(SerializationWriter writer);
 
-	public abstract T formatEnum();
+	public abstract SerializationFormatEnum formatEnum();
 
 }

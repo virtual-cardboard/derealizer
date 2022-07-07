@@ -103,52 +103,52 @@ import static derealizer.format.SerializationFormat.types;
 import derealizer.format.SerializationFormatEnum;
 import derealizer.format.SerializationFormat;
 import derealizer.format.FieldNames;
-import derealizer.format.SerializationPojo;
+import derealizer.format.Serializable;
 
-public enum MySerializationFormats implements SerializationFormatEnum<SerializationPojo> {
+public enum MySerializationFormats implements SerializationFormatEnum<Serializable> {
 
-	@FieldNames({ "weight" })
-	POTATO(types(INT), Potato.class),
-	@FieldNames({ "dogId", "name", "codeName" })
-	DOG(types(LONG, STRING_UTF8, STRING_UTF8), Dog.class),
-	@FieldNames({ "catId", "name", "numLegs", "fearedDogs", "socialSecurityNumber" })
-	CAT(types(LONG, STRING_UTF8, INT, repeated(pojo(DOG.class)), optional(LONG)), Cat.class),
-	;
+   @FieldNames({ "weight" })
+   POTATO(types(INT), Potato.class),
+   @FieldNames({ "dogId", "name", "codeName" })
+   DOG(types(LONG, STRING_UTF8, STRING_UTF8), Dog.class),
+   @FieldNames({ "catId", "name", "numLegs", "fearedDogs", "socialSecurityNumber" })
+   CAT(types(LONG, STRING_UTF8, INT, repeated(pojo(DOG.class)), optional(LONG)), Cat.class),
+   ;
 
-	// Do not edit auto-generated code below this line.
+   // Do not edit auto-generated code below this line.
 
-	private final SerializationFormat format;
-	private final Class<? extends SerializationPojo> pojoClass;
-	private final Class<? extends SerializationPojo> superClass;
+   private final SerializationFormat format;
+   private final Class<? extends Serializable> pojoClass;
+   private final Class<? extends Serializable> superClass;
 
-	private MySerializationFormats(SerializationFormat format, Class<? extends SerializationPojo> pojoClass) {
-		this(format, pojoClass, SerializationPojo.class);
-	}
+   private MySerializationFormats(SerializationFormat format, Class<? extends Serializable> pojoClass) {
+      this(format, pojoClass, Serializable.class);
+   }
 
-	private MySerializationFormats(SerializationFormat format, Class<? extends SerializationPojo> pojoClass, Class<? extends SerializationPojo> superClass) {
-		this.format = format;
-		this.pojoClass = pojoClass;
-		this.superClass = superClass;
-	}
+   private MySerializationFormats(SerializationFormat format, Class<? extends Serializable> pojoClass, Class<? extends Serializable> superClass) {
+      this.format = format;
+      this.pojoClass = pojoClass;
+      this.superClass = superClass;
+   }
 
-	@Override
-	public SerializationFormat format() {
-		return format;
-	}
+   @Override
+   public SerializationFormat format() {
+      return format;
+   }
 
-	@Override
-	public Class<? extends SerializationPojo> pojoClass() {
-		return pojoClass;
-	}
+   @Override
+   public Class<? extends Serializable> pojoClass() {
+      return pojoClass;
+   }
 
-	@Override
-	public Class<? extends SerializationPojo> superClass() {
-		return superClass;
-	}
+   @Override
+   public Class<? extends Serializable> superClass() {
+      return superClass;
+   }
 
-	public static void main(String[] args) {
-		generate(MySerializationFormats.class, SerializationPojo.class);
-	}
+   public static void main(String[] args) {
+      generate(MySerializationFormats.class, Serializable.class);
+   }
 
 }
 ```
