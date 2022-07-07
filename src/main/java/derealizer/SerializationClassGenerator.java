@@ -98,7 +98,7 @@ public class SerializationClassGenerator {
 		s += "import static " + formatEnum.getClass().getName() + "." + e.name() + ";\n\n";
 		s += "import java.util.List;\n\n";
 		if (pojoBaseClass.equals(Serializable.class)) {
-			s += "public class " + toCamelCase(e.name()) + " implements " + Serializable.class.getSimpleName() + "<" + formatEnum.getClass().getSimpleName() + "> {\n";
+			s += "public class " + toCamelCase(e.name()) + " implements " + Serializable.class.getSimpleName() + " {\n";
 		} else {
 			String implementsOrExtends = pojoBaseClass.isInterface() ? "implements" : "extends";
 			s += "public class " + toCamelCase(e.name()) + " " + implementsOrExtends + " " + pojoBaseClass.getSimpleName() + " {\n";
