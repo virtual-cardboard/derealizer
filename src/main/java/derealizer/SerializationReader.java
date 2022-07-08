@@ -76,4 +76,8 @@ public class SerializationReader {
 		return val;
 	}
 
+	public int bytesRemaining() {
+		return bytes.length - index;
+	}
+
 }
