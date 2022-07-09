@@ -23,6 +23,10 @@ public class SerializationDataType {
 		return new RepeatedDataType(type);
 	}
 
+	public static RepeatedDataType repeated(SerializationFormatEnum pojoFormatEnum) {
+		return new RepeatedDataType(pojo(pojoFormatEnum));
+	}
+
 	public static OptionalDataType optional(SerializationDataType type) {
 		return new OptionalDataType(type);
 	}
