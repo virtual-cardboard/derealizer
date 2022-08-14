@@ -2,20 +2,44 @@ package derealizer;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import derealizer.format.SerializationFormat;
-
 public class SerializationReader {
 
-	private byte[] bytes;
+	private final byte[] bytes;
 	private int index = 0;
+	private int bitIndex = 0;
 
 	public SerializationReader(byte[] bytes) {
 		this.bytes = bytes;
 	}
 
-	public SerializationReader(SerializationFormat format, SerializationReader reader) {
-		this.bytes = reader.bytes;
-		this.index = reader.index;
+	private byte readByteInternal() {
+		byte val;
+		if (bitIndex == 0) {
+			val = bytes[index];
+		} else {
+			// Read the bits from the current byte
+			val = (byte) ((bytes[index] >> bitIndex) & 0xFF);
+			// Add the bits from the next byte
+			val |= (bytes[index + 1] << (8 - bitIndex));
+		}
+		index++;
+		return val;
+	}
+
+	private int readNBitsInternal(int n) {
+		if (n > 31) {
+			throw new IllegalArgumentException("Cannot read more than 31 bits.");
+		}
+		int val = 0;
+		for (int i = 0; i < n; i++) {
+			val |= (bytes[index] & (1 << (7 - bitIndex))) >> (7 - bitIndex - i);
+			bitIndex++;
+			if (bitIndex == 8) {
+				bitIndex = 0;
+				index++;
+			}
+		}
+		return val;
 	}
 
 	public long readLong() {
@@ -48,9 +72,7 @@ public class SerializationReader {
 	}
 
 	public byte readByte() {
-		byte val = bytes[index];
-		index += 1;
-		return val;
+		return readByteInternal();
 	}
 
 	public double readDouble() {
@@ -62,9 +84,7 @@ public class SerializationReader {
 	}
 
 	public boolean readBoolean() {
-		byte val = bytes[index];
-		index += 1;
-		return (val & 1) == 1;
+		return (readNBitsInternal(1) & 1) == 1;
 	}
 
 	public String readStringUtf8() {
