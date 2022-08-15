@@ -16,9 +16,10 @@ public class SerializationWriter {
 		} else {
 			// Read the bits from the current byte
 			byte current = bytes.get(bytes.size() - 1);
-			// Add the bits from the next byte
-			bytes.set(bytes.size() - 1, (byte) ((current) | (val >> bitIndex)));
-			bytes.add((byte) (val << bitIndex));
+			// OR the bits from the next byte
+			current |= (val >>> bitIndex);
+			bytes.set(bytes.size() - 1, current);
+			bytes.add((byte) (val << (8 - bitIndex) & 0xFF));
 		}
 	}
 
@@ -31,7 +32,7 @@ public class SerializationWriter {
 				bytes.add((byte) 0);
 			}
 			// get current bit from val
-			byte bit = (byte) ((val >> (n - i - 1)) & 1);
+			int bit = (byte) ((val >> (n - i - 1)) & 1);
 			// write current bit at the correct bit index of the current byte
 			byte currentByte = bytes.get(bytes.size() - 1);
 			currentByte |= bit << (7 - bitIndex);
@@ -87,8 +88,7 @@ public class SerializationWriter {
 	public SerializationWriter consume(String val) {
 		byte[] b = val.getBytes(UTF_8);
 		short numBytes = (short) b.length;
-		writeByteInternal((byte) ((numBytes >> 8) & 0xFF));
-		writeByteInternal((byte) (numBytes & 0xFF));
+		consume((short) (numBytes - Short.MAX_VALUE));
 		for (byte x : b) {
 			writeByteInternal(x);
 		}
