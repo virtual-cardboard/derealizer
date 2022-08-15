@@ -4,6 +4,6 @@ public interface SerializationFormatEnum {
 
 	public SerializationFormat format();
 
-	public Class<? extends Serializable> pojoClass();
+	public Class<? extends Derealizable> pojoClass();
 
 }

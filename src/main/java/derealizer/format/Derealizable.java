@@ -3,7 +3,7 @@ package derealizer.format;
 import derealizer.SerializationReader;
 import derealizer.SerializationWriter;
 
-public interface Serializable {
+public interface Derealizable {
 
 	public default byte[] serialize() {
 		SerializationWriter writer = new SerializationWriter();

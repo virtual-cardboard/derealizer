@@ -14,13 +14,13 @@ import derealizer.datatype.PojoDataType;
 import derealizer.datatype.RepeatedDataType;
 import derealizer.datatype.SerializationDataType;
 import derealizer.format.FieldNames;
-import derealizer.format.Serializable;
+import derealizer.format.Derealizable;
 import derealizer.format.SerializationFormat;
 import derealizer.format.SerializationFormatEnum;
 
 public class SerializationClassGenerator {
 
-	public static <T extends Serializable> void generate(Class<? extends SerializationFormatEnum> formatEnum, Class<T> pojoBaseClass) {
+	public static <T extends Derealizable> void generate(Class<? extends SerializationFormatEnum> formatEnum, Class<T> pojoBaseClass) {
 		System.out.println(separator("Enum class"));
 		System.out.println(generateEnumClass(formatEnum, pojoBaseClass));
 		System.out.println(separator());
@@ -34,7 +34,7 @@ public class SerializationClassGenerator {
 		}
 	}
 
-	private static <T extends Serializable> String generateEnumClass(Class<? extends SerializationFormatEnum> formatEnum, Class<T> pojoBaseClass) {
+	private static <T extends Derealizable> String generateEnumClass(Class<? extends SerializationFormatEnum> formatEnum, Class<T> pojoBaseClass) {
 		String s = "";
 		s += formatEnum.getPackage() + ";\n";
 		s += "\n";
@@ -53,7 +53,7 @@ public class SerializationClassGenerator {
 		s += "import " + SerializationFormatEnum.class.getCanonicalName() + ";\n";
 		s += "import " + SerializationFormat.class.getCanonicalName() + ";\n";
 		s += "import " + FieldNames.class.getCanonicalName() + ";\n";
-		s += "import " + Serializable.class.getCanonicalName() + ";\n";
+		s += "import " + Derealizable.class.getCanonicalName() + ";\n";
 		s += "\n";
 		s += "public enum " + formatEnum.getSimpleName() + " implements " + SerializationFormatEnum.class.getSimpleName() + " {\n";
 		s += "\n";
@@ -91,14 +91,14 @@ public class SerializationClassGenerator {
 		return s;
 	}
 
-	private static <T extends Serializable> String generatePOJOClass(SerializationFormatEnum formatEnum, Class<T> pojoBaseClass) {
+	private static <T extends Derealizable> String generatePOJOClass(SerializationFormatEnum formatEnum, Class<T> pojoBaseClass) {
 		Enum<?> e = (Enum<?>) formatEnum;
 		String s = "";
 		s += formatEnum.getClass().getPackage() + ".pojo;\n\n";
 		s += "import static " + formatEnum.getClass().getName() + "." + e.name() + ";\n\n";
 		s += "import java.util.List;\n\n";
-		if (pojoBaseClass.equals(Serializable.class)) {
-			s += "public class " + toCamelCase(e.name()) + " implements " + Serializable.class.getSimpleName() + " {\n";
+		if (pojoBaseClass.equals(Derealizable.class)) {
+			s += "public class " + toCamelCase(e.name()) + " implements " + Derealizable.class.getSimpleName() + " {\n";
 		} else {
 			String implementsOrExtends = pojoBaseClass.isInterface() ? "implements" : "extends";
 			s += "public class " + toCamelCase(e.name()) + " " + implementsOrExtends + " " + pojoBaseClass.getSimpleName() + " {\n";
@@ -450,7 +450,7 @@ public class SerializationClassGenerator {
 		return s;
 	}
 
-	private static <T extends Serializable> boolean isImplemented(Class<T> pojoBaseClass, String methodName, Class<?> param) {
+	private static <T extends Derealizable> boolean isImplemented(Class<T> pojoBaseClass, String methodName, Class<?> param) {
 		try {
 			return !isAbstract(pojoBaseClass.getMethod(methodName, param).getModifiers());
 		} catch (NoSuchMethodException e) {
