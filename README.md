@@ -28,7 +28,7 @@ import static derealizer.datatype.SerializationDataType.*;
 import static derealizer.format.SerializationFormat.types;
 
 // Rename 'MySerializationFormats' to whatever you like
-public enum MySerializationFormats implements SerializationFormatEnum<SerializationPojo> {
+public enum MySerializationFormats implements SerializationFormatEnum<Derealizable> {
 
 	@FieldNames({ "field1" /*Insert more field names here*/ })
 	MY_FORMAT_1(types(INT /*Insert more data types here*/)),
@@ -38,13 +38,13 @@ public enum MySerializationFormats implements SerializationFormatEnum<Serializat
 	// Do not edit code below this line.
 
 	private final SerializationFormat format;
-	private final Class<? extends SerializationPojo> pojoClass;
-	private final Class<? extends SerializationPojo> superClass;
+	private final Class<? extends Derealizable> pojoClass;
+	private final Class<? extends Derealizable> superClass;
 
 	private MySerializationFormats(SerializationFormat format) {
 		this.format = format;
 		this.pojoClass = null;
-		this.superClass = SerializationPojo.class;
+		this.superClass = Derealizable.class;
 	}
 
 	@Override
@@ -53,17 +53,17 @@ public enum MySerializationFormats implements SerializationFormatEnum<Serializat
 	}
 
 	@Override
-	public Class<? extends SerializationPojo> pojoClass() {
+	public Class<? extends Derealizable> pojoClass() {
 		return pojoClass;
 	}
 
 	@Override
-	public Class<? extends SerializationPojo> superClass() {
+	public Class<? extends Derealizable> superClass() {
 		return superClass;
 	}
 
 	public static void main(String[] args) {
-		generate(MySerializationFormats.class, SerializationPojo.class);
+		generate(MySerializationFormats.class, Derealizable.class);
 	}
 
 }
@@ -158,7 +158,7 @@ package networking.protocols.pojo;
 
 import java.util.List;
 
-public class Potato implements SerializationPojo {
+public class Potato implements Derealizable {
 
 	private int weight;
 
@@ -191,7 +191,7 @@ package networking.protocols.pojo;
 
 import java.util.List;
 
-public class Dog implements SerializationPojo {
+public class Dog implements Derealizable {
 
 	private long dogId;
 	private String name;
@@ -240,7 +240,7 @@ package networking.protocols.pojo;
 
 import java.util.List;
 
-public class Cat implements SerializationPojo {
+public class Cat implements Derealizable {
 
 	private long catId;
 	private String name;
