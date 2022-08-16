@@ -17,7 +17,7 @@ public class SerializationWriter {
 			// Read the bits from the current byte
 			byte current = bytes.get(bytes.size() - 1);
 			// OR the bits from the next byte
-			current |= (val >>> bitIndex);
+			current |= (byte) ((val & 0xFF) >>> bitIndex);
 			bytes.set(bytes.size() - 1, current);
 			bytes.add((byte) (val << (8 - bitIndex) & 0xFF));
 		}

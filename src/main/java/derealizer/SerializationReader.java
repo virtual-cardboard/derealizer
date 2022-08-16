@@ -82,7 +82,7 @@ public class SerializationReader {
 	}
 
 	public String readStringUtf8() {
-		int numBytes = readShort() - Short.MIN_VALUE; // readShort() + 32768
+		int numBytes = readShort() + Short.MAX_VALUE; // readShort() + 32768
 		byte[] strBytes = new byte[numBytes];
 		for (int i = 0; i < numBytes; i++) {
 			strBytes[i] = readByte();
