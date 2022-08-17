@@ -1,5 +1,6 @@
 package derealizer;
 
+import static java.lang.Math.max;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class SerializationReader {
@@ -12,7 +13,52 @@ public class SerializationReader {
 		this.bytes = bytes;
 	}
 
-	private byte readByteInternal() {
+	public long readLong() {
+		return ((long) readByte() << 56)
+				| ((long) (readByte() & 0xFF) << 48)
+				| ((long) (readByte() & 0xFF) << 40)
+				| ((long) (readByte() & 0xFF) << 32)
+				| ((long) (readByte() & 0xFF) << 24)
+				| ((readByte() & 0xFF) << 16)
+				| ((readByte() & 0xFF) << 8)
+				| (readByte() & 0xFF);
+	}
+
+	public int readInt() {
+		return ((readByte()) << 24)
+				| ((readByte() & 0xFF) << 16)
+				| ((readByte() & 0xFF) << 8)
+				| (readByte() & 0xFF);
+	}
+
+	public int readIntN(int n) {
+		if (n > 31) {
+			throw new IllegalArgumentException("Cannot read more than 31 bits.");
+		}
+		int val = 0;
+		int bitsRemaining = n;
+		while (bitsRemaining > 0) {
+			if (bitIndex + bitsRemaining >= 8) {
+				val |= ((bytes[index] << bitIndex) & 0xFF) >> bitIndex << (bitsRemaining - (8 - bitIndex));
+				bitsRemaining = max(bitsRemaining - 8 + bitIndex, 0);
+				bitIndex = 0;
+				index++;
+			} else {
+				int thePartWeWant = ((bytes[index] << bitIndex) & 0xFF) >> bitIndex >> (8 - bitIndex - bitsRemaining);
+				val |= thePartWeWant;
+				bitIndex += bitsRemaining;
+				bitsRemaining = 0;
+			}
+		}
+		return val;
+	}
+
+	public short readShort() {
+		return (short) (((readByte() & 0xFF) << 8)
+				| (readByte() & 0xFF));
+	}
+
+	public byte readByte() {
 		byte val;
 		if (bitIndex == 0) {
 			val = bytes[index];
@@ -26,49 +72,6 @@ public class SerializationReader {
 		return val;
 	}
 
-	private int readNBitsInternal(int n) {
-		if (n > 31) {
-			throw new IllegalArgumentException("Cannot read more than 31 bits.");
-		}
-		int val = 0;
-		for (int i = 0; i < n; i++) {
-			val |= (bytes[index] & (1 << (7 - bitIndex))) >>> (7 - bitIndex - i);
-			bitIndex++;
-			if (bitIndex == 8) {
-				bitIndex = 0;
-				index++;
-			}
-		}
-		return val;
-	}
-
-	public long readLong() {
-		return ((long) readByteInternal() << 56)
-				| ((long) (readByteInternal() & 0xFF) << 48)
-				| ((long) (readByteInternal() & 0xFF) << 40)
-				| ((long) (readByteInternal() & 0xFF) << 32)
-				| ((long) (readByteInternal() & 0xFF) << 24)
-				| ((readByteInternal() & 0xFF) << 16)
-				| ((readByteInternal() & 0xFF) << 8)
-				| (readByteInternal() & 0xFF);
-	}
-
-	public int readInt() {
-		return ((readByteInternal()) << 24)
-				| ((readByteInternal() & 0xFF) << 16)
-				| ((readByteInternal() & 0xFF) << 8)
-				| (readByteInternal() & 0xFF);
-	}
-
-	public short readShort() {
-		return (short) (((readByteInternal() & 0xFF) << 8)
-				| (readByteInternal() & 0xFF));
-	}
-
-	public byte readByte() {
-		return readByteInternal();
-	}
-
 	public double readDouble() {
 		return Double.longBitsToDouble(readLong());
 	}
@@ -78,7 +81,7 @@ public class SerializationReader {
 	}
 
 	public boolean readBoolean() {
-		return (readNBitsInternal(1) & 1) == 1;
+		return (readIntN(1) & 1) == 1;
 	}
 
 	public String readStringUtf8() {

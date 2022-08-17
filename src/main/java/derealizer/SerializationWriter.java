@@ -23,6 +23,7 @@ public class SerializationWriter {
 		}
 	}
 
+	// TODO Use a more efficient algorithm (write chunks of bits at a time, instead of 1 at a time)
 	private void writeNBitsInternal(int val, int n) {
 		if (n > 31) {
 			throw new IllegalArgumentException("Cannot write more than 31 bits.");

@@ -72,4 +72,14 @@ class ReadWriteTest {
 		assertEquals("5yaeot79dgas15][.2314124.12'53;", reader.readStringUtf8());
 	}
 
+	@Test
+	void testIntN() {
+		SerializationWriter writer = new SerializationWriter();
+		writer.consume(0b11010101_11101101_01010101_11101101);
+		byte[] bytes = writer.toByteArray();
+		SerializationReader reader = new SerializationReader(bytes);
+		assertEquals(6845, reader.readIntN(13));
+		assertEquals(87419, reader.readIntN(17));
+	}
+
 }
