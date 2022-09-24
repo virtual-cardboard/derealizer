@@ -6,14 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import derealizer.format.Derealizable;
-import derealizer.format.SerializationFormatEnum;
+import derealizer.format.DerealizerEnum;
 
 public interface Deserializer {
 
 	public static final Map<Class<? extends Derealizable>, Deserializer> deserializerCache = new HashMap<>();
 
-	static void addToCache(Class<? extends SerializationFormatEnum> formatEnum) {
-		for (SerializationFormatEnum val : formatEnum.getEnumConstants()) {
+	static void addToCache(Class<? extends DerealizerEnum> formatEnum) {
+		for (DerealizerEnum val : formatEnum.getEnumConstants()) {
 			Class<? extends Derealizable> objClass = val.objClass();
 			if (isAbstract(objClass.getModifiers())) {
 				Class<? extends Deserializer> deserializer = val.deserializer();
@@ -28,8 +28,8 @@ public interface Deserializer {
 
 	Derealizable deserialize(SerializationReader reader);
 
-	default Derealizable recursiveDeserialize(SerializationReader reader, Class<? extends SerializationFormatEnum> enumClass) {
-		SerializationFormatEnum[] values = enumClass.getEnumConstants();
+	default Derealizable recursiveDeserialize(SerializationReader reader, Class<? extends DerealizerEnum> enumClass) {
+		DerealizerEnum[] values = enumClass.getEnumConstants();
 		// Calculate the minimum number of bits needed to represent values.length
 		int numBitsToRead = 32 - Integer.numberOfLeadingZeros(values.length);
 		Class<? extends Derealizable> objClass = values[reader.readIntN(numBitsToRead)].objClass();

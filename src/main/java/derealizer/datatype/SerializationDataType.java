@@ -1,6 +1,6 @@
 package derealizer.datatype;
 
-import derealizer.format.SerializationFormatEnum;
+import derealizer.format.DerealizerEnum;
 
 public class SerializationDataType {
 
@@ -23,16 +23,16 @@ public class SerializationDataType {
 		return new RepeatedDataType(type);
 	}
 
-	public static RepeatedDataType repeated(SerializationFormatEnum pojoFormatEnum) {
-		return new RepeatedDataType(pojo(pojoFormatEnum));
+	public static RepeatedDataType repeated(DerealizerEnum objDerealizerEnum) {
+		return new RepeatedDataType(obj(objDerealizerEnum));
 	}
 
 	public static OptionalDataType optional(SerializationDataType type) {
 		return new OptionalDataType(type);
 	}
 
-	public static PojoDataType pojo(SerializationFormatEnum pojoFormatEnum) {
-		return new PojoDataType(pojoFormatEnum);
+	public static ObjDataType obj(DerealizerEnum objDerealizerEnum) {
+		return new ObjDataType(objDerealizerEnum);
 	}
 
 	@Override

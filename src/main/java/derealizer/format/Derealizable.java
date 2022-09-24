@@ -5,16 +5,16 @@ import derealizer.SerializationWriter;
 
 public interface Derealizable {
 
-	public default byte[] serialize() {
+	default byte[] serialize() {
 		SerializationWriter writer = new SerializationWriter();
 		write(writer);
 		return writer.toByteArray();
 	}
 
-	public abstract void read(SerializationReader reader);
+	void read(SerializationReader reader);
 
-	public abstract void write(SerializationWriter writer);
+	void write(SerializationWriter writer);
 
-	public abstract SerializationFormatEnum formatEnum();
+	DerealizerEnum derealizerEnum();
 
 }

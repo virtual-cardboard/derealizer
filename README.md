@@ -100,19 +100,19 @@ import static derealizer.SerializationClassGenerator.generate;
 import static derealizer.datatype.SerializationDataType.*;
 import static derealizer.format.SerializationFormat.types;
 
-import derealizer.format.SerializationFormatEnum;
+import derealizer.format.DerealizerEnum;
 import derealizer.format.SerializationFormat;
 import derealizer.format.FieldNames;
 import derealizer.format.Serializable;
 
-public enum MySerializationFormats implements SerializationFormatEnum<Serializable> {
+public enum MySerializationFormats implements DerealizerEnum<Serializable> {
 
    @FieldNames({ "weight" })
    POTATO(types(INT), Potato.class),
    @FieldNames({ "dogId", "name", "codeName" })
    DOG(types(LONG, STRING_UTF8, STRING_UTF8), Dog.class),
    @FieldNames({ "catId", "name", "numLegs", "fearedDogs", "socialSecurityNumber" })
-   CAT(types(LONG, STRING_UTF8, INT, repeated(pojo(DOG.class)), optional(LONG)), Cat.class),
+   CAT(types(LONG, STRING_UTF8, INT, repeated(obj(DOG.class)), optional(LONG)), Cat.class),
    ;
 
    // Do not edit auto-generated code below this line.
