@@ -1,0 +1,35 @@
+package derealizer.gameobject;
+
+import derealizer.Serializer;
+import derealizer.format.Derealizable;
+import derealizer.format.DerealizerEnum;
+import derealizer.gameobject.actor.Actor;
+import derealizer.gameobject.actor.ActorSerializer;
+
+public enum GameObjectEnum implements DerealizerEnum {
+
+	ACTOR(Actor.class, ActorSerializer.class),
+	;
+
+	private final Class<? extends Derealizable> objClass;
+	private final Class<? extends Serializer> serializer;
+
+	GameObjectEnum(Class<? extends Derealizable> objClass) {
+		this(objClass, null);
+	}
+
+	GameObjectEnum(Class<? extends Derealizable> objClass, Class<? extends Serializer> serializer) {
+		this.objClass = objClass;
+		this.serializer = serializer;
+	}
+
+	@Override
+	public Class<? extends Derealizable> objClass() {
+		return objClass;
+	}
+
+	@Override
+	public Class<? extends Serializer> serializer() {
+		return serializer;
+	}
+}

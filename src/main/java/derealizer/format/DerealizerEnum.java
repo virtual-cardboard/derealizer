@@ -1,11 +1,11 @@
 package derealizer.format;
 
-import derealizer.Deserializer;
+import derealizer.Serializer;
 
 public interface DerealizerEnum {
 
 	public Class<? extends Derealizable> objClass();
 
-	Class<? extends Deserializer> deserializer();
+	Class<? extends Serializer> serializer();
 
 }
