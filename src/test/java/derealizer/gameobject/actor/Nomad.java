@@ -2,7 +2,7 @@ package derealizer.gameobject.actor;
 
 import derealizer.SerializationReader;
 import derealizer.SerializationWriter;
-import derealizer.format.Derealizable;
+import derealizer.Derealizable;
 import derealizer.gameobject.GameObjectEnum;
 
 public class Nomad extends Actor implements Derealizable {

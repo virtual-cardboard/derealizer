@@ -2,7 +2,7 @@ package derealizer.gameobject.actor;
 
 import derealizer.SerializationReader;
 import derealizer.SerializationWriter;
-import derealizer.format.Derealizable;
+import derealizer.Derealizable;
 import derealizer.gameobject.GameObject;
 import derealizer.gameobject.GameObjectEnum;
 

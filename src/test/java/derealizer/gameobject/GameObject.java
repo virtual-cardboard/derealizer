@@ -2,7 +2,7 @@ package derealizer.gameobject;
 
 import derealizer.SerializationReader;
 import derealizer.SerializationWriter;
-import derealizer.format.Derealizable;
+import derealizer.Derealizable;
 
 public abstract class GameObject implements Derealizable {
 

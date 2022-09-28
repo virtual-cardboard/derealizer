@@ -1,7 +1,4 @@
-package derealizer.format;
-
-import derealizer.SerializationReader;
-import derealizer.SerializationWriter;
+package derealizer;
 
 public interface Derealizable {
 
@@ -14,7 +11,5 @@ public interface Derealizable {
 	void read(SerializationReader reader);
 
 	void write(SerializationWriter writer);
-
-	DerealizerEnum derealizerEnum();
 
 }
