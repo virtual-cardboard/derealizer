@@ -1,9 +1,8 @@
 package derealizer.gameobject.actor;
 
+import derealizer.Derealizable;
 import derealizer.SerializationReader;
 import derealizer.SerializationWriter;
-import derealizer.Derealizable;
-import derealizer.gameobject.GameObjectEnum;
 
 public class Nomad extends Actor implements Derealizable {
 
@@ -31,11 +30,6 @@ public class Nomad extends Actor implements Derealizable {
 	public void write(SerializationWriter writer) {
 		super.write(writer);
 		writer.consume(className);
-	}
-
-	@Override
-	public GameObjectEnum derealizerEnum() {
-		return GameObjectEnum.ACTOR;
 	}
 
 	public String className() {

@@ -1,8 +1,8 @@
 package derealizer.gameobject;
 
+import derealizer.Derealizable;
 import derealizer.SerializationReader;
 import derealizer.SerializationWriter;
-import derealizer.Derealizable;
 
 public abstract class GameObject implements Derealizable {
 
@@ -24,8 +24,6 @@ public abstract class GameObject implements Derealizable {
 	public void write(SerializationWriter writer) {
 		writer.consume(id);
 	}
-
-	public abstract GameObjectEnum derealizerEnum();
 
 	public long id() {
 		return id;
