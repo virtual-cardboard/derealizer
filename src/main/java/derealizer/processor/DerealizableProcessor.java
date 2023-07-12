@@ -1,6 +1,7 @@
 package derealizer.processor;
 
 import derealizer.annotation.Derealizable;
+import derealizer.processor.error.ProcessorException;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
@@ -15,24 +16,19 @@ import static javax.tools.Diagnostic.Kind.ERROR;
 public class DerealizableProcessor extends AbstractSingleProcessor {
 
     @Override
-    public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnv) {
+    public void doProcess(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)  throws ProcessorException {
         for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(Derealizable.class)) {
             if (annotatedElement.getKind() != CLASS && annotatedElement.getKind() != INTERFACE) {
-                error(annotatedElement, "Only types can be annotated with @%s", Derealizable.class.getSimpleName());
-                return true;
+                throw new ProcessorException("Only classes can be annotated with @%s", Derealizable.class.getSimpleName());
             }
+            TypeElement typeElement = (TypeElement) annotatedElement;
 
         }
-        return false;
     }
 
     @Override
     protected Class<?> supportedAnnotation() {
         return Derealizable.class;
-    }
-
-    private void error(Element e, String msg, Object... args) {
-        messager.printMessage(ERROR, String.format(msg, args), e);
     }
 
 }
