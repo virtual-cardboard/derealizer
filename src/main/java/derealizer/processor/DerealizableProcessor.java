@@ -18,7 +18,7 @@ public class DerealizableProcessor extends AbstractSingleProcessor {
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnv) {
         for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(Derealizable.class)) {
             if (annotatedElement.getKind() != CLASS && annotatedElement.getKind() != INTERFACE) {
-                error(annotatedElement, "Only classes can be annotated with @%s", Derealizable.class.getSimpleName());
+                error(annotatedElement, "Only types can be annotated with @%s", Derealizable.class.getSimpleName());
                 return true;
             }
 
