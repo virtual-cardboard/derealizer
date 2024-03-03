@@ -38,9 +38,7 @@ public abstract class AbstractSingleProcessor extends AbstractProcessor {
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        Set<String> annotations = Collections.emptySet();
-        annotations.add(this.supportedAnnotation().getCanonicalName());
-        return annotations;
+        return Collections.singleton(this.supportedAnnotation().getCanonicalName());
     }
 
     @Override
