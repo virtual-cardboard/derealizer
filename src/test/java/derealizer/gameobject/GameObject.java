@@ -1,10 +1,10 @@
 package derealizer.gameobject;
 
-import derealizer.Derealizable;
+import derealizer.Serializable;
 import derealizer.SerializationReader;
 import derealizer.SerializationWriter;
 
-public abstract class GameObject implements Derealizable {
+public abstract class GameObject implements Serializable {
 
 	private long id;
 

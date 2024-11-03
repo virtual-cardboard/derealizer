@@ -1,6 +1,6 @@
 package derealizer;
 
-public interface Derealizable {
+public interface Serializable {
 
 	default byte[] serialize() {
 		SerializationWriter writer = new SerializationWriter();

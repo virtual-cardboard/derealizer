@@ -1,24 +1,20 @@
 package derealizer.processor;
 
-import javax.annotation.processing.AbstractProcessor;
-import derealizer.Derealizable;
-import derealizer.processor.error.ProcessorException;
+import static javax.tools.Diagnostic.Kind.ERROR;
 
-import javax.annotation.processing.*;
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
-import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.TypeElement;
-import java.util.Set;
-
-import static javax.lang.model.element.ElementKind.CLASS;
-import static javax.lang.model.element.ElementKind.INTERFACE;
-import static javax.tools.Diagnostic.Kind.ERROR;
 import javax.lang.model.util.Types;
 import java.util.Collections;
 import java.util.Set;
+
+import derealizer.processor.error.ProcessorException;
 
 public abstract class AbstractSingleProcessor extends AbstractProcessor {
 

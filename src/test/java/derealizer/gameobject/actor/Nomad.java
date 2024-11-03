@@ -1,10 +1,10 @@
 package derealizer.gameobject.actor;
 
-import derealizer.Derealizable;
+import derealizer.Serializable;
 import derealizer.SerializationReader;
 import derealizer.SerializationWriter;
 
-public class Nomad extends Actor implements Derealizable {
+public class Nomad extends Actor implements Serializable {
 
 	private String className;
 

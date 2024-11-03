@@ -1,11 +1,11 @@
 package derealizer.gameobject.actor;
 
-import derealizer.Derealizable;
+import derealizer.Serializable;
 import derealizer.SerializationReader;
 import derealizer.SerializationWriter;
 import derealizer.gameobject.GameObject;
 
-public abstract class Actor extends GameObject implements Derealizable {
+public abstract class Actor extends GameObject implements Serializable {
 
 	private int health;
 
