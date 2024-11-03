@@ -13,3 +13,4 @@ target/*
 *.project
 .idea/*
 *.iml
+surefire-reports/
