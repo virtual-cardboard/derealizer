@@ -11,6 +11,13 @@ public final class Derealizer {
 		return recursiveRead(new SerializationReader(bytes), enumClass);
 	}
 
+	/**
+	 * Recursively reads the object from the reader.
+	 *
+	 * @param reader
+	 * @param enumClass
+	 * @return
+	 */
 	public static Derealizable recursiveRead(SerializationReader reader, Class<? extends DerealizerEnum> enumClass) {
 		DerealizerEnum[] values = enumClass.getEnumConstants();
 		// Calculate the minimum number of bits needed to represent values.length
@@ -30,12 +37,26 @@ public final class Derealizer {
 		}
 	}
 
+	/**
+	 * Serializes the object.
+	 *
+	 * @param obj
+	 * @param enumClass
+	 * @return
+	 */
 	public static byte[] serialize(Derealizable obj, Class<? extends DerealizerEnum> enumClass) {
 		SerializationWriter writer = new SerializationWriter();
 		recursiveWrite(obj, writer, enumClass);
 		return writer.toByteArray();
 	}
 
+	/**
+	 * Recursively writes the object to the writer.
+	 *
+	 * @param obj
+	 * @param writer
+	 * @param enumClass
+	 */
 	public static void recursiveWrite(Derealizable obj, SerializationWriter writer, Class<? extends DerealizerEnum> enumClass) {
 		DerealizerEnum[] enumConstants = enumClass.getEnumConstants();
 		for (int i = 0; i < enumConstants.length; i++) {
